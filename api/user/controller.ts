@@ -24,7 +24,7 @@ const createData = async (
 
     const checkEmail = await User.findOne({ email });
     if (checkEmail)
-      return res.status(400).json({ message: "email sudah terdaftar" });
+      return res.status(400).json({ message: "email already registered" });
     const salt = bcrypt.genSaltSync(10);
     const bcryptPassword = bcrypt.hashSync(password, salt);
     await User.create({
@@ -45,7 +45,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     const checkUser = await User.findOne({ email });
 
     if (!checkUser)
-      return res.status(404).json({ message: "email belum terdaftar" });
+      return res.status(404).json({ message: "email not registered" });
 
     bcrypt.compare(password, checkUser?.password, async (err, isMatch) => {
       console.log({ isMatch });
@@ -61,7 +61,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
         res.json({ message: "login success", token });
       } else {
-        res.status(400).json({ message: "password atau email salah" });
+        res.status(400).json({ message: "Incorrect password or e-mail" });
       }
     });
   } catch (error) {
@@ -74,6 +74,92 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = await User.findByIdAndUpdate(id, req.body, { new: true });
     res.status(200).json({ message: "succes update data", data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createWorkExperience = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (user) {
+      user?.work_experience.push(req.body);
+      const result = await user.save();
+      return res.status(200).json({ message: "succes create data", result });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteWorkExperience = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { idWork } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (user) {
+      user.work_experience = user.work_experience.filter(
+        (item: any) => item?._id.toString() !== idWork
+      );
+      const result = await user.save();
+      return res.status(200).json({ message: "succes delete data", result });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createEducation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (user) {
+      user.education.push(req.body);
+      const result = await user.save();
+      return res.status(200).json({ message: "succes create data", result });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getDataProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.headers["authorization"];
+  if (!token) return res.sendStatus(401);
+  try {
+    jwt.verify(
+      token,
+      "aaofnasfasd.1ef.24tredr4t2redc42te",
+      async (err, decode) => {
+        if (err) return res.sendStatus(403);
+        const checkUser = await User.findOne({ email: decode.email }).select(
+          "username email about is_admin work_experience education token"
+        );
+        if (!checkUser || token !== checkUser?.token)
+          return res.sendStatus(403);
+        res.status(200).json({ message: "succes get data", data: checkUser });
+      }
+    );
   } catch (error) {
     next(error);
   }
@@ -103,4 +189,13 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-module.exports = { createData, login, logout, updateUser };
+module.exports = {
+  createData,
+  login,
+  logout,
+  updateUser,
+  getDataProfile,
+  createWorkExperience,
+  createEducation,
+  deleteWorkExperience,
+};

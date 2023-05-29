@@ -3,8 +3,10 @@ import db from "./database";
 import userRouter from "./api/user/router";
 import JobRouter from "./api/job/router";
 import ApplicationRouter from "./api/application/router";
+import cors from "cors";
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 db.on("open", () => {
