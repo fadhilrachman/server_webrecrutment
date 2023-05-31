@@ -139,6 +139,28 @@ const createEducation = async (
   }
 };
 
+const deleteEducation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { idEducation } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (user) {
+      user.education = user.education.filter(
+        (item: any) => item?._id.toString() !== idEducation
+      );
+      const result = await user.save();
+      return res.status(200).json({ message: "succes delete data", result });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getDataProfile = async (
   req: Request,
   res: Response,
@@ -198,4 +220,5 @@ module.exports = {
   createWorkExperience,
   createEducation,
   deleteWorkExperience,
+  deleteEducation,
 };

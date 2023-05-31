@@ -1,9 +1,11 @@
 import Application from "./model";
 import { Request, Response, NextFunction } from "express";
 import ApplicationInterface from "../../utils/interfaces/Application";
+
 const getAllData = async (req: Request, res: Response, next: NextFunction) => {
+  const { user } = req.query;
   try {
-    const data = await Application.find()
+    const data = await Application.find(user ? { user } : {})
       .populate({
         path: "user",
         select: "username email about work_experience education",
