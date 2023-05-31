@@ -17,7 +17,7 @@ const applicationSchema = new mongoose.Schema({
       "interview",
       "test",
       "recruited",
-      "inappropriate",
+      "unsuccessful",
     ],
   },
   notes: String,
