@@ -1,9 +1,12 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost:27017/web_recruitment", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb+srv://ahmadsuqq:padilRhmn210904!@recruitment.xrjbt.mongodb.net/sample_airbnb?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 const db = mongoose.connection;
 

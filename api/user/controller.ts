@@ -29,7 +29,7 @@ const createData = async (
     const bcryptPassword = bcrypt.hashSync(password, salt);
     await User.create({
       username,
-      is_admin,
+      is_admin: false,
       email,
       password: bcryptPassword,
     });
