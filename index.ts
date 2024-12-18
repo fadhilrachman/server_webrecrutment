@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import db from "./database";
 import userRouter from "./api/user/router";
 import JobRouter from "./api/job/router";
@@ -9,6 +9,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello from Vercel Express Server!");
+});
 db.on("open", () => {
   app.listen(4000, () => {
     console.log("database berhasil tersambung");
