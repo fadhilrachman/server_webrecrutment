@@ -12,16 +12,17 @@ const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+app.listen(4000, () => {
+    console.log("HOST CONNECTED");
+});
 app.get("/", (req, res) => {
     res.send("Hello from Vercel Express Server!");
 });
+app.use(router_1.default);
+app.use(router_2.default);
+app.use(router_3.default);
 database_1.default.on("open", () => {
-    app.listen(4000, () => {
-        console.log("database berhasil tersambung");
-        app.use(router_1.default);
-        app.use(router_2.default);
-        app.use(router_3.default);
-    });
+    console.log("database berhasil tersambung");
 });
 database_1.default.on("error", () => {
     console.log("database tidak tersambung");
